@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { recipeIngredient } from './RecipeIngredient'
+import { recipeIngredientSchema } from './RecipeIngredient'
 
 const Schema = mongoose.Schema;
 
@@ -18,7 +18,7 @@ const recipeSchema = new Schema({
     },
 
     recipeIngredientSet: {
-        type: [recipeIngredient]
+        type: [recipeIngredientSchema]
     }
 });
 
