@@ -4,16 +4,15 @@ import { notFoundError, internalServerError } from './ErrorHandler';
 
 const unitRouter = express.Router();
 
-unitRouter.get('/units', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+unitRouter.get('/units', async (req: express.Request, res: express.Response) => {
     await unit.find({}, (err, doc) => {
         if (err) {
-            internalServerError(err, res, next);
+            internalServerError(err, res);
         } else {
             if (doc.length !== 0) {
                 res.json(doc);
-                next();
             } else {
-                notFoundError(res, next);
+                notFoundError(res);
             }
         }
     });

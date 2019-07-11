@@ -4,35 +4,33 @@ import { notFoundError, internalServerError } from './ErrorHandler';
 
 const ingredientRouter = express.Router();
 
-ingredientRouter.get('/ingredients', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+ingredientRouter.get('/ingredients', async (req: express.Request, res: express.Response) => {
     await ingredient.find({}, (err, doc) => {
         if (err) {
-            internalServerError(err, res, next);
+            internalServerError(err, res);
         } else {
             if (doc.length !== 0) {
                 res.json(doc);
-                next();
             } else {
-                notFoundError(res, next);
+                notFoundError(res);
             }
         }
     });
 });
 
-ingredientRouter.post('/ingredient', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+ingredientRouter.post('/ingredient', async (req: express.Request, res: express.Response) => {
     await ingredient.create({
         name: req.body.name
     }, (err, doc) => {
         if (err) {
-            internalServerError(err, res, next);
+            internalServerError(err, res);
         } else {
             res.status(201).json(doc);
-            next();
         }
     });
 });
 
-ingredientRouter.get('/ingredient', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+ingredientRouter.get('/ingredient', async (req: express.Request, res: express.Response) => {
     const param = req.body.name;
     await ingredient.find({
         'name': {
@@ -43,13 +41,12 @@ ingredientRouter.get('/ingredient', async (req: express.Request, res: express.Re
     },
         (err, doc) => {
             if (err) {
-                internalServerError(err, res, next);
+                internalServerError(err, res);
             } else {
                 if (doc.length !== 0) {
                     res.json(doc);
-                    next();
                 } else {
-                    notFoundError(res, next);
+                    notFoundError(res);
                 }
             }
         });
