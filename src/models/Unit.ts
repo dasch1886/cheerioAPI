@@ -9,6 +9,6 @@ const unitSchema = new Schema({
     }
 });
 
-const unit = mongoose.model('unit', unitSchema);
+const unit = mongoose.model('unit', unitSchema, 'unit');
 
 export { unit };
