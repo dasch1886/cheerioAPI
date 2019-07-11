@@ -19,4 +19,4 @@ const recipeIngredientSchema = new Schema({
 
 const recipeIngredient = mongoose.model('recipeIngredient', recipeIngredientSchema);
 
-export { recipeIngredient };
+export { recipeIngredient, recipeIngredientSchema };
