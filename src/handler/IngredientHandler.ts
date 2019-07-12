@@ -1,10 +1,11 @@
 import * as express from 'express';
 import { ingredient } from '../models/Ingredient';
 import { notFoundError, internalServerError } from './ErrorHandler';
+import { tokenVerify } from './Auth';
 
 const ingredientRouter = express.Router();
 
-ingredientRouter.get('/ingredients', async (req: express.Request, res: express.Response) => {
+ingredientRouter.get('/ingredients', tokenVerify, async (req: express.Request, res: express.Response) => {
     await ingredient.find({}, (err, doc) => {
         if (err) {
             internalServerError(err, res);
@@ -18,7 +19,7 @@ ingredientRouter.get('/ingredients', async (req: express.Request, res: express.R
     });
 });
 
-ingredientRouter.post('/ingredient', async (req: express.Request, res: express.Response) => {
+ingredientRouter.post('/ingredient', tokenVerify, async (req: express.Request, res: express.Response) => {
     await ingredient.create({
         name: req.body.name
     }, (err, doc) => {
@@ -30,7 +31,7 @@ ingredientRouter.post('/ingredient', async (req: express.Request, res: express.R
     });
 });
 
-ingredientRouter.get('/ingredient', async (req: express.Request, res: express.Response) => {
+ingredientRouter.get('/ingredient', tokenVerify, async (req: express.Request, res: express.Response) => {
     const param = req.body.name;
     await ingredient.find({
         'name': {
