@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { user } from '../models/User';
 import { internalServerError } from './ErrorHandler';
-import { passwordHash, passwordVerify } from './Auth';
+import { passwordHash, passwordVerify, tokenGenerate, tokenPrefix } from './Auth';
 
 const userRouter = express.Router();
 
@@ -43,12 +43,17 @@ userRouter.get('/user', async (req: express.Request, res: express.Response) => {
                 if (doc) {
                     const userValue = doc.toObject();
                     if (passwordVerify(passwordValue, userValue.password)) {
-                        res.json({ message: 'login successfully' });
+                        res.json(
+                            {
+                                nickname: userValue.nickname,
+                                token_type: tokenPrefix,
+                                access_token: tokenGenerate(userValue.email, userValue.password)
+                            });
                     } else {
-                        res.json({ message: 'invalid password' });
+                        res.status(400).json({ message: 'invalid password' });
                     }
                 } else {
-                    res.json({ message: 'email or nickname is invalid' });
+                    res.status(400).json({ message: 'email or nickname is invalid' });
                 }
             }
         });
