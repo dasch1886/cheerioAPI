@@ -22,7 +22,7 @@ function tokenGenerate(email: string, key: string): string {
         },
         key,
         {
-            expiresIn: '1min'
+            expiresIn: '1h'
         });
 }
 
@@ -30,25 +30,27 @@ function tokenVerify(req: express.Request, res: express.Response, next: express.
     const bearerHeader = req.headers['authorization'];
     if (bearerHeader) {
         const bearerToken = bearerHeader.split(' ')[1];
+        const nickname = req.body.nickname;
+
         user.findOne({
-            nickname: req.body.nickname
+            nickname: nickname
         }, (err, doc) => {
             if (err) {
                 internalServerError(err, res);
+            } else if (doc) {
+                jwt.verify(bearerToken, doc.toObject().password, (err) => {
+                    if (err) {
+                        res.status(401).json({ message: 'unauthorized access' });
+                    } else {
+                        next();
+                    }
+                });
             } else {
-                if (doc) {
-                    jwt.verify(bearerToken, doc.toObject().password, (err) => {
-                        if (err) {
-                            res.status(401).json({ message: 'unauthorized access' });
-                        } else {
-                            next();
-                        }
-                    });
-                } else {
-                    notFoundError(res);
-                }
+                notFoundError(res);
             }
         });
+    } else {
+        res.status(401).json({ message: 'unauthorized access' });
     }
 }
 
