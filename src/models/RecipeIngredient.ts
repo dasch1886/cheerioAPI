@@ -2,21 +2,19 @@ import * as mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const recipeIngredientSchema = new Schema({
-    ingredientId: {
-        type: String
-    },
-
+export const recipeIngredientSchema = new Schema({
     name: {
         type: String,
         required: [true, 'name field is required']
     },
 
-    unitId: {
-        type: String
+    amount: {
+        type: String,
+        required: [true, 'amount field is required']
+    },
+
+    unitName: {
+        type: String,
+        required: [true, 'unit name field is required']
     }
 });
-
-const recipeIngredient = mongoose.model('recipeIngredient', recipeIngredientSchema);
-
-export { recipeIngredient, recipeIngredientSchema };
