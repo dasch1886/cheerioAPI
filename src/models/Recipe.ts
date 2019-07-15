@@ -10,18 +10,19 @@ const recipeSchema = new Schema({
     },
 
     author: {
-        type: String
+        type: String,
+        required: [true, 'author field is required']
     },
 
-    description: {
-        type: String
+    desc: {
+        type: String,
+        required: [true, 'description field is required']
     },
 
-    recipeIngredientSet: {
-        type: [recipeIngredientSchema]
+    ingredients: {
+        type: [recipeIngredientSchema],
+        required: [true, 'ingredients field is required']
     }
 });
 
-const recipe = mongoose.model('recipe', recipeSchema);
-
-export { recipe };
+export const recipe = mongoose.model('recipe', recipeSchema, 'recipes');
