@@ -9,19 +9,19 @@ ingredientRouter.get('/ingredients', tokenVerify, async (req: express.Request, r
     await ingredient.find({}, (err, doc) => {
         if (err) {
             internalServerError(err, res);
+        } else if (doc.length !== 0) {
+            res.json(doc);
         } else {
-            if (doc.length !== 0) {
-                res.json(doc);
-            } else {
-                notFoundError(res);
-            }
+            notFoundError(res);
         }
     });
 });
 
-ingredientRouter.post('/ingredient', tokenVerify, async (req: express.Request, res: express.Response) => {
+ingredientRouter.post('/ingredients', tokenVerify, async (req: express.Request, res: express.Response) => {
+    const name = req.body.name;
+
     await ingredient.create({
-        name: req.body.name
+        name: name
     }, (err, doc) => {
         if (err) {
             internalServerError(err, res);
@@ -32,23 +32,22 @@ ingredientRouter.post('/ingredient', tokenVerify, async (req: express.Request, r
 });
 
 ingredientRouter.get('/ingredient', tokenVerify, async (req: express.Request, res: express.Response) => {
-    const param = req.body.name;
+    const name = req.body.name;
+
     await ingredient.find({
         'name': {
             '$in': [
-                new RegExp(param)
+                new RegExp(name)
             ]
         }
     },
         (err, doc) => {
             if (err) {
                 internalServerError(err, res);
+            } else if (doc.length !== 0) {
+                res.json(doc);
             } else {
-                if (doc.length !== 0) {
-                    res.json(doc);
-                } else {
-                    notFoundError(res);
-                }
+                notFoundError(res);
             }
         });
 });
