@@ -22,6 +22,19 @@ const recipeSchema = new Schema({
     ingredients: {
         type: [recipeIngredientSchema],
         required: [true, 'ingredients field is required']
+    },
+
+    comments: {
+        type: [{
+            author: {
+                type: String,
+                required: [true, 'author field is required']
+            },
+            value: {
+                type: String,
+                required: [true, 'value field is required']
+            }
+        }]
     }
 });
 
