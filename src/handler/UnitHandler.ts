@@ -1,22 +1,18 @@
 import * as express from 'express';
 import { unit } from '../models/Unit';
 import { notFoundError, internalServerError } from './ErrorHandler';
-import { tokenVerify } from './Auth';
+import { tokenVerify } from '../middleware/Auth';
 
-const unitRouter = express.Router();
+export const unitRouter = express.Router();
 
-unitRouter.get('/units', tokenVerify, async (req: express.Request, res: express.Response) => {
-    await unit.find({}, (err, doc) => {
-        if (err) {
+unitRouter.get('/units', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    await unit.find({}).then(
+        doc => {
+            if (doc.length !== 0) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
             internalServerError(err, res);
-        } else {
-            if (doc.length !== 0) {
-                res.json(doc);
-            } else {
-                notFoundError(res);
-            }
-        }
-    });
+        });
+    next();
 });
-
-export { unitRouter };

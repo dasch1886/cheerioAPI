@@ -1,12 +1,12 @@
 import * as express from 'express';
 import { user } from '../models/User';
 import { internalServerError } from './ErrorHandler';
-import { passwordHash, passwordVerify, tokenGenerate, tokenPrefix } from './Auth';
+import { passwordHash, passwordVerify, tokenGenerate, tokenPrefix } from '../middleware/Auth';
 import { loginResponse } from '../models/LoginResponse';
 
-const userRouter = express.Router();
+export const userRouter = express.Router();
 
-userRouter.post('/user', async (req: express.Request, res: express.Response) => {
+userRouter.post('/user', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const emailValue = req.body.email;
     const nicknameValue = req.body.nickname;
     const passwordValue = req.body.password;
@@ -15,17 +15,18 @@ userRouter.post('/user', async (req: express.Request, res: express.Response) => 
         email: emailValue,
         password: passwordHash(passwordValue),
         nickname: nicknameValue
-    },
-        (err, doc) => {
-            if (doc) {
-                res.status(201).json({ message: 'register successfully' })
-            } else {
-                internalServerError(err, res);
-            }
-        });
+    }).then(
+        doc => {
+            res.status(201).json({ message: 'register successfully' })
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
 });
 
-userRouter.get('/user', async (req: express.Request, res: express.Response) => {
+userRouter.get('/user', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const loginValue = req.body.login;
     const passwordValue = req.body.password;
 
@@ -38,28 +39,25 @@ userRouter.get('/user', async (req: express.Request, res: express.Response) => {
                 nickname: loginValue
             }
         ]
-    },
-        (err, doc) => {
-            if (err) {
-                internalServerError(err, res);
-            } else {
-                if (doc) {
-                    const userValue = doc.toObject();
-                    if (passwordVerify(passwordValue, userValue.password)) {
-                        const response: loginResponse = {
-                            nickname: userValue.nickname,
-                            token_type: tokenPrefix,
-                            access_token: tokenGenerate(userValue.email, userValue.password)
-                        }
-                        res.json(response);
-                    } else {
-                        res.status(400).json({ message: 'invalid password' });
+    }).then(
+        doc => {
+            if (doc) {
+                const userValue = doc.toObject();
+                if (passwordVerify(passwordValue, userValue.password)) {
+                    const response: loginResponse = {
+                        nickname: userValue.nickname,
+                        token_type: tokenPrefix,
+                        access_token: tokenGenerate(userValue.email, userValue.password)
                     }
-                } else {
-                    res.status(400).json({ message: 'email or nickname is invalid' });
-                }
-            }
-        });
-});
+                    res.json(response);
 
-export { userRouter };
+                } else res.status(400).json({ message: 'email or nickname is invalid' });
+
+            } else res.status(400).json({ message: 'email or nickname is invalid' });
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
+});

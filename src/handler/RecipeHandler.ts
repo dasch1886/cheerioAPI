@@ -1,23 +1,24 @@
 import * as express from 'express';
 import { recipe } from '../models/Recipe';
 import { notFoundError, internalServerError } from './ErrorHandler';
-import { tokenVerify } from './Auth';
+import { tokenVerify } from '../middleware/Auth';
 
-const recipeRouter = express.Router();
+export const recipeRouter = express.Router();
 
-recipeRouter.get('/recipes', tokenVerify, async (req: express.Request, res: express.Response) => {
-    await recipe.find({}, (err, doc) => {
-        if (err) {
+recipeRouter.get('/recipes', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    await recipe.find({}).then(
+        doc => {
+            if (doc.length !== 0) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
             internalServerError(err, res);
-        } else if (doc.length !== 0) {
-            res.json(doc);
-        } else {
-            notFoundError(res);
         }
-    });
+    );
+    next();
 });
 
-recipeRouter.post('/recipe', tokenVerify, async (req: express.Request, res: express.Response) => {
+recipeRouter.post('/recipe', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
     const author = req.body.nickname;
     const desc = req.body.desc;
@@ -28,16 +29,18 @@ recipeRouter.post('/recipe', tokenVerify, async (req: express.Request, res: expr
         author: author,
         desc: desc,
         ingredients: ingredients
-    }, (err, doc) => {
-        if (err) {
-            internalServerError(err, res);
-        } else {
+    }).then(
+        doc => {
             res.status(201).json(doc);
+        },
+        err => {
+            internalServerError(err, res);
         }
-    });
+    );
+    next();
 });
 
-recipeRouter.get('/recipe', tokenVerify, async (req: express.Request, res: express.Response) => {
+recipeRouter.get('/recipe', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
     const author = req.body.author;
     const desc = req.body.desc;
@@ -54,15 +57,14 @@ recipeRouter.get('/recipe', tokenVerify, async (req: express.Request, res: expre
                 desc: desc
             }
         ]
-    }, (err, doc) => {
-        if (err) {
+    }).then(
+        doc => {
+            if (doc.length !== 0) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
             internalServerError(err, res);
-        } else if (doc.length !== 0) {
-            res.json(doc);
-        } else {
-            notFoundError(res);
         }
-    });
+    );
+    next();
 });
-
-export { recipeRouter };

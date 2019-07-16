@@ -1,37 +1,40 @@
 import * as express from 'express';
 import { ingredient } from '../models/Ingredient';
 import { notFoundError, internalServerError } from './ErrorHandler';
-import { tokenVerify } from './Auth';
+import { tokenVerify } from '../middleware/Auth';
 
-const ingredientRouter = express.Router();
+export const ingredientRouter = express.Router();
 
-ingredientRouter.get('/ingredients', tokenVerify, async (req: express.Request, res: express.Response) => {
-    await ingredient.find({}, (err, doc) => {
-        if (err) {
+ingredientRouter.get('/ingredients', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    await ingredient.find({}).then(
+        doc => {
+            if (doc.length !== 0) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
             internalServerError(err, res);
-        } else if (doc.length !== 0) {
-            res.json(doc);
-        } else {
-            notFoundError(res);
         }
-    });
+    );
+    next();
 });
 
-ingredientRouter.post('/ingredients', tokenVerify, async (req: express.Request, res: express.Response) => {
+ingredientRouter.post('/ingredients', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
 
     await ingredient.create({
         name: name
-    }, (err, doc) => {
-        if (err) {
-            internalServerError(err, res);
-        } else {
+    }).then(
+        doc => {
             res.status(201).json(doc);
+        },
+        err => {
+            internalServerError(err, res);
         }
-    });
+    );
+    next();
 });
 
-ingredientRouter.get('/ingredient', tokenVerify, async (req: express.Request, res: express.Response) => {
+ingredientRouter.get('/ingredient', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
 
     await ingredient.find({
@@ -40,16 +43,14 @@ ingredientRouter.get('/ingredient', tokenVerify, async (req: express.Request, re
                 new RegExp(name)
             ]
         }
-    },
-        (err, doc) => {
-            if (err) {
-                internalServerError(err, res);
-            } else if (doc.length !== 0) {
-                res.json(doc);
-            } else {
-                notFoundError(res);
-            }
-        });
+    }).then(
+        doc => {
+            if (doc.length !== 0) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
 });
-
-export { ingredientRouter };
