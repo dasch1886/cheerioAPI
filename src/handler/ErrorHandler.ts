@@ -1,14 +1,14 @@
 import * as express from 'express';
 
-function notFoundError(res: express.Response) {
+export function notFoundError(res: express.Response) {
     res.status(404).json({ message: 'entries not found' });
 }
 
-function internalServerError(err: any, res: express.Response) {
+export function internalServerError(err: express.ErrorRequestHandler, res: express.Response) {
     console.error(err);
-    res.status(500).json({
-        error: err,
-    });
+    res.status(500).json({ error: err });
 }
 
-export { notFoundError, internalServerError };
+export function unauthorizedAccess(res: express.Response) {
+    res.status(401).json({ message: 'unauthorized access' });
+}
