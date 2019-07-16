@@ -4,7 +4,7 @@
   "description": "api for application to manage culinary recipes ",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -x ts-node src/Main.ts"
+    "start": "nodemon -x ts-node src/index.ts"
   },
   "author": "dasch1886",
   "license": "MIT",
