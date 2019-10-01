@@ -6,9 +6,17 @@ import { notFoundError, internalServerError, unauthorizedAccess } from '../handl
 
 export const tokenPrefix = 'Bearer';
 
+export function passLenghtValidator(pass: string): boolean {
+    return pass.length >= 8 ? true : false;
+}
+
 export function passwordHash(pass: string): string {
-    const salt = bcryptjs.genSaltSync(10);
-    return bcryptjs.hashSync(pass, salt);
+    if (passLenghtValidator(pass)) {
+        const salt = bcryptjs.genSaltSync(10);
+        return bcryptjs.hashSync(pass, salt);
+    } else {
+        return pass;
+    }
 }
 
 export function passwordVerify(pass: string, hash: string): boolean {
