@@ -8,7 +8,10 @@ export const recipeRouter = express.Router();
 recipeRouter.get('/recipes', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     await recipe.find({}).then(
         doc => {
-            if (doc.length !== 0) res.json(doc);
+            if (doc.length !== 0) res.json({
+                listSize: doc.length,
+                recipes: doc
+            });
             else notFoundError(res);
         },
         err => {
@@ -41,22 +44,12 @@ recipeRouter.post('/recipe', tokenVerify, async (req: express.Request, res: expr
 });
 
 recipeRouter.get('/recipe', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const name = req.body.name;
-    const author = req.body.author;
-    const desc = req.body.desc;
+    const text = req.body.text || '';
 
     await recipe.find({
-        $or: [
-            {
-                name: name
-            },
-            {
-                author: author
-            },
-            {
-                desc: desc
-            }
-        ]
+        $text: {
+            $search: text
+        }
     }).then(
         doc => {
             if (doc.length !== 0) res.json(doc);
