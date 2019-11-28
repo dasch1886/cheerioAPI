@@ -4,7 +4,7 @@ import { getRecipes } from './SplitData';
 import { recipe } from '../models/Recipe';
 
 export const host = 'http://www.przepisy.pl';
-export const mainUri = ['/przepisy/influencerzy', '/przepisy/dania-i-przekaski/dania-glowne'];
+export const mainUri = ['/przepisy/influencerzy'];
 
 export const options: pr.RequestPromiseOptions = {
     method: 'GET',
