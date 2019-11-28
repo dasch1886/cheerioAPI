@@ -12,7 +12,8 @@ const userSchema = new Schema({
 
     password: {
         type: String,
-        required: [true, 'password field is required']
+        required: [true, 'password field is required'],
+        minlength: [8, 'too few characters'],
     },
 
     nickname: {

@@ -20,7 +20,7 @@ userRouter.post('/user', async (req: express.Request, res: express.Response, nex
             res.status(201).json({ message: 'register successfully' })
         },
         err => {
-            internalServerError(err, res);
+            res.status(400).json(err);
         }
     );
     next();

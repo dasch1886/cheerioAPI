@@ -6,13 +6,21 @@ import { notFoundError, internalServerError, unauthorizedAccess } from '../handl
 
 export const tokenPrefix = 'Bearer';
 
-export async function passwordHash(pass: string): Promise<string> {
-    const salt = bcryptjs.genSaltSync(10);
-    return await bcryptjs.hash(pass, salt);
+export function passLenghtValidator(pass: string): boolean {
+    return pass.length >= 8 ? true : false;
 }
 
-export async function passwordVerify(pass: string, hash: string): Promise<boolean> {
-    return await bcryptjs.compare(pass, hash);
+export function passwordHash(pass: string): string {
+    if (passLenghtValidator(pass)) {
+        const salt = bcryptjs.genSaltSync(10);
+        return bcryptjs.hashSync(pass, salt);
+    } else {
+        return pass;
+    }
+}
+
+export function passwordVerify(pass: string, hash: string): boolean {
+    return bcryptjs.compareSync(pass, hash);
 }
 
 export function tokenGenerate(email: string, key: string): string {

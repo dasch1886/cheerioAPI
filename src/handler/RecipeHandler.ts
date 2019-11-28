@@ -5,7 +5,7 @@ import { tokenVerify } from '../middleware/Auth';
 
 export const recipeRouter = express.Router();
 
-recipeRouter.get('/recipes', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+recipeRouter.get('/recipes', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     await recipe.find({}).then(
         doc => {
             if (doc.length !== 0) res.json(doc);
