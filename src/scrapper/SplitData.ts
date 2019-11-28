@@ -5,7 +5,7 @@ import * as fs from 'fs';
 
 const getRecipeDetailsUrl = /.*www.przepisy\.pl/;
 const getImgName = /[^\/]*\.(jpg|png|jpeg)/;
-const imagesPath = 'public/';
+export const imagesPath = 'public/';
 
 export async function getRecipes(htmlDoc: CheerioStatic): Promise<Array<any>> {
     const $ = htmlDoc;
@@ -41,10 +41,9 @@ export async function getRecipes(htmlDoc: CheerioStatic): Promise<Array<any>> {
 
             await getImage(imgUri, settings).then((imgFile) => {
 
-                const imgPath: string = `${imagesPath}_${imgName}`;
-                fs.writeFileSync(imgPath, imgFile);
+                fs.writeFileSync(`${imagesPath}_${imgName}`, imgFile);
 
-                data.imgPath = imgPath;
+                data.imgPath = `_${imgName}`;
 
             }).catch(err => console.warn(`Problem with get image`));
 
