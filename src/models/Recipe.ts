@@ -24,6 +24,10 @@ const recipeSchema = new Schema({
         required: [true, 'ingredients field is required']
     },
 
+    imgPath: {
+        type: String
+    },
+
     comments: {
         type: [{
             author: {
