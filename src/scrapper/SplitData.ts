@@ -10,7 +10,7 @@ export const imagesPath = 'public/';
 export async function getRecipes(htmlDoc: CheerioStatic): Promise<Array<any>> {
     const $ = htmlDoc;
 
-    const tmp: Array<any> = $('.recipe-wrapper').map((i, el) => {
+    const tmp: Array<any> = $('app-recipe-wrapper').map((i, el) => {
         return el
     }).toArray();
 
@@ -29,6 +29,7 @@ export async function getRecipes(htmlDoc: CheerioStatic): Promise<Array<any>> {
         const link = getRecipeDetailsLinkHref($, el);
         const settings: pr.RequestPromiseOptions = options;
         settings.host = host + link.replace(getRecipeDetailsUrl, '');
+        console.info(settings);
 
         await getRecipeDetailsHtml(settings).then(async (res) => {
             const recipeDetails = cheerio.load(res);
