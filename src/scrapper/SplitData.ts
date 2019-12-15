@@ -29,7 +29,6 @@ export async function getRecipes(htmlDoc: CheerioStatic): Promise<Array<any>> {
         const link = getRecipeDetailsLinkHref($, el);
         const settings: pr.RequestPromiseOptions = options;
         settings.host = host + link.replace(getRecipeDetailsUrl, '');
-        console.info(settings);
 
         await getRecipeDetailsHtml(settings).then(async (res) => {
             const recipeDetails = cheerio.load(res);
