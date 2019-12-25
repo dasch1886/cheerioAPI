@@ -17,18 +17,24 @@ userRouter.post('/user', async (req: express.Request, res: express.Response, nex
         nickname: nicknameValue
     }).then(
         doc => {
-            res.status(201).json({ message: 'register successfully' })
+            res.status(201).json({
+                register: true,
+                message: 'register successfully'
+            });
         },
         err => {
-            res.status(400).json(err);
+            res.status(400).json({
+                register: false,
+                message: err,
+            });
         }
     );
     next();
 });
 
 userRouter.get('/user', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const loginValue = req.body.login;
-    const passwordValue = req.body.password;
+    const loginValue = req.query.login;
+    const passwordValue = req.query.password;
 
     await user.findOne({
         $or: [
