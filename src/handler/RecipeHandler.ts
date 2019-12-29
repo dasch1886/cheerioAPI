@@ -2,6 +2,7 @@ import * as express from 'express';
 import { recipe } from '../models/Recipe';
 import { notFoundError, internalServerError } from './ErrorHandler';
 import { tokenVerify } from '../middleware/Auth';
+import { author } from '../models/Author';
 
 export const recipeRouter = express.Router();
 
@@ -59,7 +60,7 @@ recipeRouter.get('/recipe', async (req: express.Request, res: express.Response, 
 });
 
 recipeRouter.post('/recipe/comment', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const id = req.body.id;
+    const id = req.body._id;
     const author = req.body.author;
     const value = req.body.value;
 
@@ -95,6 +96,54 @@ recipeRouter.get('/recipe/comment', async (req: express.Request, res: express.Re
     await recipe.findById(id).then(
         doc => {
             if (doc) res.json(doc.get('comments'));
+            else notFoundError(res);
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
+});
+
+
+recipeRouter.get('/recipes/filter', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const text = new RegExp(req.query.text);
+
+    await recipe.find({
+        $or: [
+            {
+                name: {
+                    $regex: text
+                }
+            },
+            {
+                author: {
+                    $regex: text
+                }
+            },
+            {
+                desc: {
+                    $regex: text
+                }
+            }
+        ]
+    }).then(
+        doc => {
+            if (doc) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
+});
+
+recipeRouter.get('/recipes/author', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    await author.find({}).then(
+        doc => {
+            if (doc) res.json(doc);
             else notFoundError(res);
         },
         err => {
