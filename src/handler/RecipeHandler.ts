@@ -139,7 +139,7 @@ recipeRouter.get('/recipes/filter', async (req: express.Request, res: express.Re
     next();
 });
 
-recipeRouter.get('/recipes/author', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+recipeRouter.get('/recipes/authors', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
     await author.find({}).then(
         doc => {
