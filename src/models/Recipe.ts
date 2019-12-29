@@ -6,17 +6,20 @@ const Schema = mongoose.Schema;
 const recipeSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'name field is required']
+        required: [true, 'name field is required'],
+        text: true
     },
 
     author: {
         type: String,
-        required: [true, 'author field is required']
+        required: [true, 'author field is required'],
+        text: true
     },
 
     desc: {
         type: String,
-        required: [true, 'description field is required']
+        required: [true, 'description field is required'],
+        text: true
     },
 
     ingredients: {

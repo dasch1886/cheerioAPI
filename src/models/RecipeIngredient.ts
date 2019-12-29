@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 export const recipeIngredientSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'name field is required']
+        required: [true, 'name field is required'],
+        text: true,
     },
 
     amount: {
