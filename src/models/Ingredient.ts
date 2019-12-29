@@ -8,7 +8,6 @@ const ingredientSchema = new Schema({
         unique: true,
         required: [true, 'name field is required'],
         lowercase: true,
-        text: true
     }
 });
 
