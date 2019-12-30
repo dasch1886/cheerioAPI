@@ -139,6 +139,35 @@ recipeRouter.get('/recipes/filter', async (req: express.Request, res: express.Re
     next();
 });
 
+recipeRouter.get('/recipes/filterAdvanced', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const author = req.query.author ? new RegExp(req.query.author) : '';
+    const array = req.query.array ? JSON.parse(req.query.array) : new RegExp('[a-zA-Z0-9]');
+
+    await recipe.find({
+        $and: [
+            {
+                author: {
+                    $regex: author
+                }
+            },
+            {
+                "ingredients.name": {
+                    $in: array
+                }
+            }
+        ]
+    }).then(
+        doc => {
+            if (doc) res.json(doc);
+            else notFoundError(res);
+        },
+        err => {
+            internalServerError(err, res);
+        }
+    );
+    next();
+});
+
 recipeRouter.get('/recipes/authors', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
     await author.find({}).then(
