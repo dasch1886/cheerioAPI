@@ -4,6 +4,7 @@ import { getRecipes } from './SplitData';
 import { recipe } from '../models/Recipe';
 import { author } from '../models/Author';
 import { ingredient } from '../models/Ingredient';
+import { unit } from '../models/Unit';
 
 export const host = 'http://www.przepisy.pl';
 export const mainUri = ['/przepisy/influencerzy'];
@@ -33,6 +34,12 @@ export async function Initscrapping() {
                     return { name: el.name.toLowerCase() };
                 }), 'name');
                 setIngeridentToDB(ingredients);
+
+                const units = getUnique(getArrayFromProperty(res, 'ingredients').flat().map(el => {
+                    return { name: el.unitName.toLowerCase() };
+                }), 'name');
+                
+                setUnitToDB(units);
             });
         });
     }
@@ -74,6 +81,18 @@ async function setIngeridentToDB(ingredients: Array<any>) {
             console.log('Ingredient added');
         }).catch(err => {
             console.info('Error during adding ingredient to db');
+        });
+    })
+}
+
+async function setUnitToDB(units: Array<any>) {
+    units.forEach(async (el) => {
+        await unit.create({
+            name: el.name
+        }).then(doc => {
+            console.log('Unit added');
+        }).catch(err => {
+            console.info('Error during adding unit to db');
         });
     })
 }

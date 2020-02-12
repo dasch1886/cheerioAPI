@@ -20,7 +20,7 @@ ingredientRouter.get('/ingredients', async (req: express.Request, res: express.R
 
 ingredientRouter.post('/ingredients', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
-
+    console.log(req.params);
     await ingredient.create({
         name: name
     }).then(

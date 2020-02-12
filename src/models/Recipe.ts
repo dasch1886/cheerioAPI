@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const recipeSchema = new Schema({
     name: {
         type: String,
+        unique: true,
         required: [true, 'name field is required'],
         text: true
     },
@@ -28,6 +29,14 @@ const recipeSchema = new Schema({
     },
 
     imgPath: {
+        type: String
+    },
+
+    executionTime: {
+        type: String
+    },
+
+    difficultyLevel: {
         type: String
     },
 

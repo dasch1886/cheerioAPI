@@ -24,15 +24,29 @@ recipeRouter.get('/recipes', async (req: express.Request, res: express.Response,
 
 recipeRouter.post('/recipe', tokenVerify, async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const name = req.body.name;
-    const author = req.body.nickname;
+    const authorName = req.body.author;
     const desc = req.body.desc;
     const ingredients = req.body.ingredients;
+    const image = req.body.image;
+    const executionTime = req.body.executionTime;
+    const difficultyLevel = req.body.difficultyLevel;
+
+    console.log(req.body);
+
+    await author.create({
+        name: authorName
+    }).then(doc => {
+        console.log('Author added');
+    }).catch(err => {
+        console.info('Error during adding author to db');
+    });
 
     await recipe.create({
         name: name,
-        author: author,
+        author: authorName,
         desc: desc,
-        ingredients: ingredients
+        ingredients: ingredients,
+        executionTime: 
     }).then(
         doc => {
             res.status(201).json(doc);

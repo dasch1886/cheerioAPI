@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const unitSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'name field is required']
+        required: [true, 'name field is required'],
+        unique: true,
     }
 });
 

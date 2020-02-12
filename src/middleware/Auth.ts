@@ -38,7 +38,7 @@ export async function tokenVerify(req: express.Request, res: express.Response, n
     const bearerHeader = req.headers['authorization'];
     if (bearerHeader) {
         const bearerToken = bearerHeader.split(' ')[1];
-        const nickname = req.body.nickname;
+        const nickname = req.query.nickname;
 
         await user.findOne({
             nickname: nickname
